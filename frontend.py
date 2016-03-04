@@ -9,7 +9,7 @@ WHITE = (255, 255, 255)
 GOLD   = (254, 205, 40)
 
 def quit():
-	pygame.quit()
+    pygame.quit()
 pygame.init()
 screen_width = 700
 screen_height = 400
@@ -21,14 +21,14 @@ clock = pygame.time.Clock()
 input = textinput.Input(screen)
 input.on_return = quit
 while not done:
-	screen.fill(WHITE)
-	events = pygame.event.get()
-	shift = False
-	for event in events:
-		if (event.type == pygame.QUIT):
-			done = True
-	input.update(events)
-	input.draw()
-	pygame.display.flip()
-	clock.tick(30)
+    screen.fill(WHITE)
+    events = pygame.event.get()
+    shift = False
+    for event in events:
+        if (event.type == pygame.QUIT):
+            done = True
+    input.update(events)
+    input.draw()
+    pygame.display.flip()
+    clock.tick(30)
 pygame.quit()
