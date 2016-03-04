@@ -1,51 +1,39 @@
 import socket
 import select
 import sys
+import textinput
 
-def chat_client():
-    import socket # For some reason it doesn't work without it here.
-    if(len(sys.argv) < 3) :
-        host = 'localhost'
-        port = 5594
-        #print("Usage : python chat_client.py hostname port")
-        #sys.exit()
-    else:
-        host = sys.argv[1]
-        port = int(sys.argv[2])
+class ChatClient:
+    def __init__(self):
+        self.server_socket = None
+        self.on_received = None
+        self.message = ''
 
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        server_socket.connect((host, port))
-        server_socket.settimeout(2)
-    except:
-        print("Unable to connect.")
-        sys.exit()
-
-    print("Connected.")
-    sys.stdout.write('[Me] ')
-    sys.stdout.flush()
-
-    while True:
-        socket_list = [server_socket,]
+    def connect(self, host = 'localhost', port = 5594):
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            self.server_socket.connect((host, port))
+            print("Connected.")
+        except:
+            print("Unable to connect.")
+            sys.exit()
+    
+    def receive(self):
+        socket_list = [self.server_socket,]
 
         ready_to_read, ready_to_write, ready_to_err = \
                        select.select(socket_list, [], [], 0)
         for socket in ready_to_read:
-            if socket == server_socket:
+            if socket == self.server_socket:
                 data = socket.recv(1024)
                 if data:
-                    sys.stdout.write(data.decode())
-                    sys.stdout.write('[Me] ')
-                    sys.stdout.flush()
+                    self.message = data.decode()
+                    self.on_received()
+                    #Send it to frontend
+                    print(data.decode())
                 else:
                     print("Disconnected.")
                     sys.exit()
-        if sys.stdin.isatty():
-            message = sys.stdin.readline()
-            server_socket.send(message.encode())
-            sys.stdout.write('[Me] ')
-            sys.stdout.flush()
 
-if __name__ == "__main__":
-
-    sys.exit(chat_client())
+    def send_message(self, message):
+        self.server_socket.send(message.encode())
