@@ -13,10 +13,9 @@ class ChatClient:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             self.server_socket.connect((host, port))
-            print("Connected.")
+            self.on_received("Connected.")
         except:
-            print("Unable to connect.")
-            sys.exit()
+            self.on_received("Unable to connect")
     
     def receive(self):
         socket_list = [self.server_socket,]
@@ -28,7 +27,7 @@ class ChatClient:
                 data = socket.recv(1024)
                 if data:
                     self.message = data.decode()
-                    self.on_received()
+                    self.on_received(self.message)
                     #Send it to frontend
                     print(data.decode())
                 else:

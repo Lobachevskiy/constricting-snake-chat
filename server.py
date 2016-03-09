@@ -56,7 +56,9 @@ def broadcast(string, server_socket, ignore_socket = None):
                 except:
                     if socket in SOCKET_LIST:
                         SOCKET_LIST.remove(socket)
-
+                        print("Failed to send")
+                    else:
+                        print("Failed to send")
 if __name__ == "__main__":
     
     sys.exit(chat_server())

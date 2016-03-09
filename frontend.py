@@ -15,19 +15,22 @@ screen_height = 400
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 chat_client = client.ChatClient()
+client_input = textinput.Input(screen)
+server_input = textinput.Input(screen)
+def print_message(message):
+    server_input.message = message
+    print("received Message")
+chat_client.on_received = print_message
 chat_client.connect()
-text_input = textinput.Input(screen)
+client_input.y = 200
 
 def message_server():
-    chat_client.send_message(text_input.message)
+    chat_client.send_message(client_input.message)
 
-def print_message():
-    print("Printing messages is not yet implemented") #TODO
 
 done = False
 clock = pygame.time.Clock()
-text_input.on_return = message_server
-chat_client.on_received = print_message
+client_input.on_return = message_server
 while not done:
     chat_client.receive()
     screen.fill(WHITE)
@@ -36,8 +39,9 @@ while not done:
     for event in events:
         if (event.type == pygame.QUIT):
             done = True
-    text_input.update(events)
-    text_input.draw()
+    client_input.update(events)
+    client_input.draw()
+    server_input.draw()
     pygame.display.flip()
     clock.tick(30)
 pygame.quit()
