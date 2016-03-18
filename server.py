@@ -36,10 +36,12 @@ def chat_server():
                     else:
                         if (socket in SOCKET_LIST):
                             SOCKET_LIST.remove(socket)
-                            broadcast("Client (%s, %s) disconnected.\n" % addr,
+                            broadcast("Client %s disconnected.\n" %
+                                      str(socket.getpeername()),
                                       main_socket)
-                except:
-                    broadcast("Client (%s, %s) disconnected.\n" % addr,
+                except socket.error:
+                    broadcast("Client %s disconnected.\n" %
+                              str(socket.getpeername()),
                                       main_socket)
                     continue
 
@@ -53,7 +55,7 @@ def broadcast(string, server_socket, ignore_socket = None):
             else:
                 try:
                     socket.send(string.encode())
-                except:
+                except socket.error:
                     if socket in SOCKET_LIST:
                         SOCKET_LIST.remove(socket)
                         print("Failed to send")

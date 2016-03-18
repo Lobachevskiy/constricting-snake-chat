@@ -14,7 +14,7 @@ class ChatClient:
         try:
             self.server_socket.connect((host, port))
             self.on_received("Connected.")
-        except:
+        except socket.error:
             self.on_received("Unable to connect")
     
     def receive(self):
